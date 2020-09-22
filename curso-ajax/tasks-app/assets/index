@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+</head>
+<body>
+  <label for="">Ingrese dato</label>
+  <input type="text" name="" id="cuota">
+  <br><br><br>
+  <p>Fecha actual: <span id="factual"></span></p>
+  <br><br><br>
+  <p>Resultado: <span id="resultado"></span></p>
+  <form action="action_page.php">
+    First name:<br>
+    <input type="text" name="firstname" >
+    <br>
+    Last name:<br>
+    <input type="text" name="lastname" >
+    <br><br>
+    <input type="submit" value="Submit">
+  </form> 
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> 
+  <script src="codigo.js"></script>
+</body>
+</html>

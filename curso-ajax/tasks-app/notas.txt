@@ -1,0 +1,79 @@
+https://es.stackoverflow.com/questions/34904/cuando-debo-usar-los-métodos-post-y-get
+POST es cuando la aplicacion del navegador le envia algo al servidor
+GET para obtener algo
+
+Usaremos GET sólo para operaciones que impliquen consulta/recuperación de datos
+Usaremos POST para operaciones que impliquen modificación en el servidor (por ejemplo borrado de datos, actualización, etc.).
+
+
+
+  function fecthTask(){
+    $.ajax({
+        url: 'assets/task-list.php',
+        type: 'GET',
+        success: function(response) {
+            // console.log(response);
+            let task = JSON.parse(response);
+            console.log(task),
+            $.each(task, function(i,task){
+            var newRow =
+            "<tr>"
+            +"<td>"+task.id+"</td>"
+            +"<td>"+task.name+"</td>"
+            +"<td>"+task.description+"</td>"
+            +"</tr>";                        
+            });
+        }
+    });
+}
+
+
+function Mostrar() {
+    fetch("assets/task-list.php")
+      .then(res => res.json())
+      .then(datos => {
+        console.log(datos);
+      });
+  }
+
+
+
+    function Mostrar() {
+    // fetch("assets/task-list.php")
+    //   .then(res => res.json())
+    //   .then(datos => {
+    //     console.log(datos);
+    //     // tabla(datos)
+    //   });
+    var tbody = document.getElementById('tasks');
+
+    fetch('assets/task-list.php',{
+        method: 'get'
+    })
+    .then(function(response) {
+        console.log(response);
+        return response.json();
+    })
+    .then(function(data) {
+        console.log(data);
+        let template = '';
+        data.forEach(data => {
+            template += `
+                <p>${data.name}</p>
+            `
+        });
+        // for (let i = 0; i < data.length; i++) {
+        //     template += `
+        //         <p>${data[i].name}</p>
+        //     `
+        // }
+        console.log(template);
+    })
+    .catch(function(err) {
+        console.error(err);
+    });
+
+
+    //   .then(response => response.json())
+    //   .then(data => console.log(JSON.stringify(data)));
+  }

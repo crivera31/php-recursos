@@ -1,0 +1,15 @@
+#cabecera > th{
+	text-align: center;
+}
+#tbl_practicante {
+	text-align: center;
+}
+#paterno_ape, #materno_ape{
+	height: 28px;
+}
+#tbl_iniciar{
+	text-align: center;
+}
+#tipo {
+	min-width: 60px;
+}

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>DataPicker</title>
+  <link rel="stylesheet" href="datepicker.css">
+</head>
+<body>
+  <input type="text" class="form-control" data-toggle="datepicker">
+  <br>
+  <div id="colorPicker">
+    <a class="color">
+      <div class="colorInner"></div>
+    </a>
+    <div class="track"></div>
+    <ul class="dropdown">
+      <li></li>
+    </ul>
+    <input type="hidden" class="colorInput" />
+  </div>
+
+  <script src="jquery-3.4.1.slim.min.js"></script>
+  <script src="datepicker.js"></script>
+  <script>
+    $(function() {
+      $('[data-toggle="datepicker"]').datepicker({
+        autoHide: true,//para q se oculte auto
+        months: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+        monthsShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        days: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+        daysShort: ['Dom', 'Lun', 'Mar', 'Mié', 'Juv', 'Vie', 'Sáb'],
+        daysMin: ['Do', 'Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá'],
+        // zIndex: 2048,
+        format: 'dd/mm/yyyy'
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+Options +FollowSymLinks
+RewriteEngine on
+
+DirectoryIndex home.php
+
+#En nuestro ejemplo tendríamos la siguiente ruta
+#RewriteRule ^categoria/([0-9]+)$ categoria.php?id=$1
+#RewriteRule ^categoria/([a-zA-Z]+)/([0-9]+)\-([a-zA-Z0-9-]*)$ categoria.php?productos=$1&categoria=$2-$3
+
+RewriteRule ^productos/([a-zA-Z0-9-]*)$ productos.php?categoria=$1 [L]
+
+#   Producto
+#   Entrada: producto/NOMBRE_PRODUCTO/
+#   Salida: productos.php?id=NOMBRE_PRODUCTO
+#RewriteRule ^producto/(.*)$  /productos.php?id=$1 [L]

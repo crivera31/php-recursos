@@ -1,0 +1,398 @@
+<?php
+require 'libreria_excel/vendor/autoload.php';
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+
+require_once '../class/conexionDB.php';
+
+$db = new conexionDB();
+$conn = $db->getConexion();
+
+if(isset($_POST['validar'])){
+    if(empty($_POST['selectVerInst']) || empty($_POST['selectVerMes'])){
+        $msj = 'escoga_opcion';
+        header("location: informe_horas.php?error1=$msj");
+    }
+    
+    $institucion_ID = $_POST['selectVerInst'];
+    $mes_ID = $_POST['selectVerMes'];
+
+    try {
+        $query = "SELECT * FROM hrs_laboradas where MONTH(fecha) = $mes_ID ";
+        $data = $conn->query($query);
+        $data->execute();
+    } catch (PDOException $e) {
+        die ("¡Error!: " . $e->getMessage() . " Archivo: " . $e->getFile() . " Linea: " . $e->getLine());
+    }
+    $row_count = $data->rowCount();
+
+    if ($row_count > 0) {     
+        // echo $institucion_ID. ' => ' .$mes_ID;
+        $dias = array("Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sábado");
+        $meses = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+
+        $nom_mes = $meses[date($mes_ID) - 1];
+
+        try {
+            $query = "SELECT nombre, niveles
+                    FROM instituciones
+                    where IdInstitucion = $institucion_ID ";
+            $data1 = $conn->query($query);
+            $data1->execute();
+        } catch (PDOException $e) {
+            die("¡Error!: " . $e->getMessage() . " Archivo: " . $e->getFile() . " Linea: " . $e->getLine());
+        }
+        $colegio = $data1->fetchAll(PDO::FETCH_ASSOC);
+
+
+        try {
+            $query = "SELECT IdDocente, dni, nombre, ape_paterno, ape_materno, jornada_laboral, nombre_grado, nombre_seccion, hrs_programadas
+            FROM docentes
+            where IdInstitucion = $institucion_ID and estado = 1
+            order by ape_paterno asc";
+            $data2 = $conn->query($query);
+            $data2->execute();
+        } catch (PDOException $e) {
+            die("¡Error!: " . $e->getMessage() . " Archivo: " . $e->getFile() . " Linea: " . $e->getLine());
+        }
+
+        $result = $data2->fetchAll(PDO::FETCH_ASSOC);
+
+
+        $spreadsheet = new Spreadsheet();
+        #cargamos el formato excel .xlsx
+        $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+        $spreadsheet = $reader->load("formato.xlsx");
+
+        $title = 'Reporte ' . $nom_mes;
+        $spreadsheet->getActiveSheet()->setTitle($title);
+        $sheet = $spreadsheet->getActiveSheet();
+        #año
+        $sheet->setCellValue('I7', date('Y'));
+        $sheet->getStyle('I7')->getAlignment()->setHorizontal('center');
+        $spreadsheet->getActiveSheet()->mergeCells('I7:M7');
+
+        #dato colegio
+        foreach ($colegio as $row) {
+            $sheet->setCellValue('D9', $row['nombre']);
+            $spreadsheet->getActiveSheet()->mergeCells('D9:E9');
+
+            $sheet->setCellValue('C10', strtoupper($row['niveles']));
+            $spreadsheet->getActiveSheet()->mergeCells('C10:D10');
+        }
+
+        #mostrar dias L M M ..... 
+        $titutlo = 'HORAS EFECTIVAS DE TRABAJO ESCOLAR - MES ' . strtoupper($nom_mes);
+        $sheet->setCellValue('I12', $titutlo);
+        $spreadsheet->getActiveSheet()->mergeCells('I12:AN12');
+
+        $InicialesDias = array('I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM');
+
+        // FechaInicial mes actual
+        // $month = date('m');
+        $month = $mes_ID;
+        $year = date('Y');
+        $fechaInicial = strtotime(date('Y-m-d', mktime(0, 0, 0, $month, 1, $year)));
+        //fecha final mes actual
+        // $month = date('m');
+        $month = $mes_ID;
+        $year = date('Y');
+        $day = date("d", mktime(0, 0, 0, $month + 1, 0, $year));
+        $fechaFinal = strtotime(date('Y-m-d', mktime(0, 0, 0, $month, $day, $year)));
+
+        $f = 0;
+        $celdaFecha = 15;
+        for ($i = $fechaInicial; $i <= $fechaFinal; $i += 86400) {
+            $texto = date('w', $i);
+            switch ($texto) {
+                case 0:
+                    $day = 'D';
+                    break;
+                case 1:
+                    $day = 'L';
+                    break;
+                case 2:
+                    $day = 'M';
+                    break;
+                case 3:
+                    $day = 'M';
+                    break;
+                case 4:
+                    $day = 'J';
+                    break;
+                case 5:
+                    $day = 'V';
+                    break;
+                case 6:
+                    $day = 'S';
+                    break;
+            }
+            $data = $InicialesDias[$f] . $celdaFecha;
+            if ($texto == 0 || $texto == 6) {
+                $sheet->setCellValue($data, $day);
+
+                $spreadsheet->getActiveSheet()->getStyle($data)
+                ->getFont()->getColor()->setARGB(\PhpOffice\PhpSpreadsheet\Style\Color::COLOR_RED);
+            } else {
+                $sheet->setCellValue($data, $day);
+            }
+            $f++;
+        }
+
+
+        $indice1 = 16;
+        $cont = 0;
+        $ArrayIDdocente = array();
+
+        foreach ($result as $row) {
+            array_push($ArrayIDdocente, $row['IdDocente']);
+            $cont++;
+            $celda1 = "B" . $indice1;
+            $spreadsheet->getActiveSheet()->getStyle($celda1)
+                ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda1)
+                ->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda1)
+                ->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda1)
+                ->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $sheet->getStyle($celda1)->getAlignment()->setHorizontal('center');
+
+            $celda2 = "C" . $indice1;
+            $spreadsheet->getActiveSheet()->getStyle($celda2)
+                ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda2)
+                ->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda2)
+                ->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda2)
+                ->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $sheet->getStyle($celda2)->getAlignment()->setHorizontal('center');
+
+            $celda3 = "D" . $indice1;
+            $spreadsheet->getActiveSheet()->getStyle($celda3)
+                ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda3)
+                ->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda3)
+                ->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda3)
+                ->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $sheet->getStyle($celda3)->getAlignment()->setHorizontal('center');
+
+            $celda4 = "E" . $indice1;
+            $spreadsheet->getActiveSheet()->getStyle($celda4)
+                ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda4)
+                ->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda4)
+                ->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda4)
+                ->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $sheet->getStyle($celda4)->getAlignment()->setHorizontal('center');
+
+            $celda5 = "F" . $indice1;
+            $spreadsheet->getActiveSheet()->getStyle($celda5)
+                ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda5)
+                ->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda5)
+                ->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda5)
+                ->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $sheet->getStyle($celda5)->getAlignment()->setHorizontal('center');
+
+            $celda6 = "G" . $indice1;
+            $spreadsheet->getActiveSheet()->getStyle($celda6)
+                ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda6)
+                ->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda6)
+                ->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda6)
+                ->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $sheet->getStyle($celda6)->getAlignment()->setHorizontal('center');
+
+            $celda7 = "H" . $indice1;
+            $spreadsheet->getActiveSheet()->getStyle($celda7)
+                ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda7)
+                ->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda7)
+                ->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda7)
+                ->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $sheet->getStyle($celda7)->getAlignment()->setHorizontal('center');
+
+
+
+            $sheet->setCellValue($celda1, $cont);
+            $sheet->setCellValue($celda2, $row['dni']);
+            $sheet->setCellValue($celda3, $row['ape_paterno'] . ' ' . $row['ape_materno'] . ', ' . $row['nombre']);
+            $sheet->setCellValue($celda4, $row['jornada_laboral']);
+            $sheet->setCellValue($celda5, $row['nombre_grado']);
+            $sheet->setCellValue($celda6, $row['nombre_seccion']);
+            $sheet->setCellValue($celda7, $row['hrs_programadas']);
+            $indice1++;
+        }
+        // print_r($ArrayIDdocente);
+
+        $indice2 = 16;
+        $var = 16;
+        $celda2 = array('I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM');
+        $j = 0;
+        for ($i = 0; $i < sizeof($ArrayIDdocente); $i++) {
+            try {
+                //
+                $query = "SELECT hrs.horas, hrs.fecha
+                FROM hrs_laboradas hrs
+                where hrs.IdDocente = $ArrayIDdocente[$i] and MONTH(hrs.fecha) = $mes_ID and YEAR(hrs.fecha) = YEAR(now())
+                order by fecha";
+                $data3 = $conn->query($query);
+                $data3->execute();
+            } catch (PDOException $e) {
+                die("¡Error!: " . $e->getMessage() . " Archivo: " . $e->getFile() . " Linea: " . $e->getLine());
+            }
+
+            $horas = $data3->fetchAll(PDO::FETCH_ASSOC);
+            foreach ($horas as $row) {
+                $data = $celda2[$j] . $indice2;
+
+                $spreadsheet->getActiveSheet()->getStyle($data)
+                    ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                $spreadsheet->getActiveSheet()->getStyle($data)
+                    ->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                $spreadsheet->getActiveSheet()->getStyle($data)
+                    ->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                $spreadsheet->getActiveSheet()->getStyle($data)
+                    ->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                $sheet->getStyle($data)->getAlignment()->setHorizontal('center');
+
+                $sheet->setCellValue($data, $row['horas']);
+                $j++;
+            }
+            #suma de horas
+            $celda_suma1 = 'AN'.$indice2;
+            $celda_inicio = 'I'.$indice2;
+            $celda_fin = 'AM'.$indice2;
+            $spreadsheet->getActiveSheet()->getStyle($celda_suma1)
+                ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda_suma1)
+                ->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda_suma1)
+                ->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle($celda_suma1)
+                ->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $sheet->getStyle($celda_suma1)->getAlignment()->setHorizontal('center');
+            $sheet->setCellValue($celda_suma1, '=SUM('.$celda_inicio.':'.$celda_fin.')');
+            $j = 0;
+            $indice2++;
+        }
+        #ver total de hojas
+        //$count = $spreadsheet->getSheetCount();
+        
+        $celda_resultado = 'B'.$indice2.':'.'G'.$indice2;
+        $spreadsheet->getActiveSheet()->mergeCells($celda_resultado);
+
+        $spreadsheet->getActiveSheet()->getStyle($celda_resultado)
+            ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $spreadsheet->getActiveSheet()->getStyle($celda_resultado)
+            ->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $spreadsheet->getActiveSheet()->getStyle($celda_resultado)
+            ->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $spreadsheet->getActiveSheet()->getStyle($celda_resultado)
+            ->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        $celda_suma2 = 'H'.$indice2;
+        $celdaH_ini = 'H'.$var;
+        $celdaH_fin = 'H'.($indice2-1);
+        $sheet->setCellValue($celda_suma2, '=SUM('.$celdaH_ini.':'.$celdaH_fin.')');
+
+        $spreadsheet->getActiveSheet()->getStyle($celda_suma2)
+            ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $spreadsheet->getActiveSheet()->getStyle($celda_suma2)
+            ->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $spreadsheet->getActiveSheet()->getStyle($celda_suma2)
+            ->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $spreadsheet->getActiveSheet()->getStyle($celda_suma2)
+            ->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle($celda_suma2)->getAlignment()->setHorizontal('center');
+
+        $celda_resultado2 = 'I'.$indice2.':'.'AM'.$indice2;
+        $spreadsheet->getActiveSheet()->mergeCells($celda_resultado2);
+
+        $spreadsheet->getActiveSheet()->getStyle($celda_resultado2)
+            ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $spreadsheet->getActiveSheet()->getStyle($celda_resultado2)
+            ->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $spreadsheet->getActiveSheet()->getStyle($celda_resultado2)
+            ->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $spreadsheet->getActiveSheet()->getStyle($celda_resultado2)
+            ->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+        $celda_suma3 = 'AN'.$indice2;
+        $celdaAN_ini = 'AN'.$var;
+        $celdaAN_fin = 'AN'.($indice2-1);
+        $sheet->setCellValue($celda_suma3, '=SUM('.$celdaAN_ini.':'.$celdaAN_fin.')');
+
+        $spreadsheet->getActiveSheet()->getStyle($celda_suma3)
+            ->getBorders()->getTop()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $spreadsheet->getActiveSheet()->getStyle($celda_suma3)
+            ->getBorders()->getBottom()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $spreadsheet->getActiveSheet()->getStyle($celda_suma3)
+            ->getBorders()->getLeft()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $spreadsheet->getActiveSheet()->getStyle($celda_suma3)
+            ->getBorders()->getRight()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle($celda_suma3)->getAlignment()->setHorizontal('center');
+        
+        
+        //observaciones
+        $celda_titulo = 'B'.($indice2 + 4);        
+        $sheet->setCellValue($celda_titulo, 'Observaciones');
+        $sheet->getStyle($celda_titulo)->getFont()->setBold(true);
+        $observaciones_titulo =  'B'.($indice2 + 4).':'.'C'.($indice2 + 4);
+        $spreadsheet->getActiveSheet()->mergeCells($observaciones_titulo);
+        
+        $fila = $indice2 + 5;
+        for ($i = 0; $i < sizeof($ArrayIDdocente); $i++) {
+            try {
+                $query = "SELECT d.nombre, d.ape_paterno, d.ape_materno, hrs.horas, hrs.fecha, hrs.IdDocente, hrs.observaciones
+              from hrs_laboradas hrs
+              inner JOIN docentes d
+              on hrs.IdDocente = d.IdDocente
+              WHERE observaciones != ' ' and hrs.IdDocente = $ArrayIDdocente[$i] and MONTH(hrs.fecha) = $mes_ID and YEAR(hrs.fecha) = YEAR(now())
+              GROUP BY IdDocente, fecha";
+                $data4 = $conn->query($query);
+                $data4->execute();
+            } catch (PDOException $e) {
+                die("¡Error!: " . $e->getMessage() . " Archivo: " . $e->getFile() . " Linea: " . $e->getLine());
+            }
+
+            $result = $data4->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($result as $row) {
+                $celda_obser = 'B'.$fila;
+
+                $cadena = $row['fecha'] . ': ' . $row['ape_paterno'] . ' ' . $row['ape_materno'] . ', ' . $row['nombre'] .  ' - Observación: ' . $row['observaciones'];
+                $sheet->setCellValue($celda_obser, $cadena);
+
+                $observaciones = $celda_obser .':'.'H'.$fila;
+                $spreadsheet->getActiveSheet()->mergeCells($observaciones);
+
+                $fila++;
+            }
+        }
+        $nom_guardar = 'Reporte_' . $nom_mes;
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-disposition: attachment; filename=' . $nom_guardar . '.xls');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xls');
+        // ob_end_clean(); 
+        $writer->save('php://output');
+    } else {
+        $msj = 'registro_no_econtrado';
+        header("location: informe_horas.php?error2=$msj");
+    }
+}
+?>

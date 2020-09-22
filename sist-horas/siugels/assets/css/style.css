@@ -1,0 +1,39 @@
+/*================================================================================
+	Item Name: Robust - Responsive Admin Theme
+	Version: 1.0
+	Author: PIXINVENT
+	Author URL: http://www.themeforest.net/user/pixinvent
+================================================================================
+
+NOTE:
+------
+PLACE HERE YOUR OWN SCSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
+WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
+#title-nav{
+	text-decoration: none;
+	color: #55595c;
+}
+#cabecera > th{
+	text-align: center;
+}
+#tbl_inst {
+	text-align: center;
+}
+#TablaDocente {
+	text-align: center;
+}
+#TablaDocenteHoras {
+	text-align: center;
+}
+#TablaDoc {
+	text-align: center;
+}
+#TablaInstituciones {
+	text-align: center;
+}
+#tbl_niveles{
+	text-align: center;
+}
+#TablaUser{
+	text-align: center;
+}
