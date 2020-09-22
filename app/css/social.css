@@ -1,0 +1,56 @@
+.appWhatsapp {
+  position: fixed;
+  /* right: 26px; */
+  bottom: 100px;
+  width: 60px;
+  z-index: 1000;
+  left: 20px !important;
+  right: initial !important;
+}
+.appWhatsapp img {
+  width: 100%;
+  height: auto;
+}
+.fb_dialog {
+  left: 20px !important;
+  right: initial !important;
+}
+
+#fb-root iframe {
+  left: 20px !important;
+  right: initial !important;
+}
+.availability.sin-stock span {
+  color: #fff;
+  font-size: 11px;
+  line-height: 18px;
+  display: block;
+  background: #44494d;
+  text-transform: uppercase;
+  padding: 3px 15px;
+  font-weight: bold;
+  border-radius: 999px;
+}
+.availability.sin-stock span::before {
+  /* content: "\f00d"; */
+  font-family: "Simple-Line-Icons";
+  display: inline-block;
+  margin-right: 5px;
+  font-size: 11px;
+  vertical-align: middle;
+}
+button.mercadopago-button {
+  background-color: #167bcb;
+  color: #fff;
+  /* border: 1px solid #111; */
+  border-radius: 0;
+  font-size: 14px;
+}
+.page-not-found h4 {
+    color: #da2c2a;
+    font-size: 60px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 15px;
+    font-family: Arial,Helvetica,sans-serif;
+}

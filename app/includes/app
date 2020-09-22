@@ -1,0 +1,344 @@
+<div class="featured-pro">
+  <div class="slider-items-products">
+    <div class="featured-block">
+      <div class="block-title">
+        <h2>Nuevos Productos</h2>
+      </div>
+      <div id="featured-slider" class="product-flexslider hidden-buttons">
+        <div class="slider-items slider-width-col4 products-grid block-content" id="cargar_new_productos">
+          <?php
+          foreach ($result as $row) {
+          ?>
+            <div class="item">
+              <div class="item-inner">
+                <div class="item-img">
+                  <div class="item-img-info"> <a target="_blank" class="product-image" title="<?php echo $row['codigo']; ?>" href="detalle_producto?codigo=<?php echo $row['codigo']; ?>">
+                      <img alt="<?php echo $row['codigo']; ?>" src="images/productos/<?php echo $row['foto']; ?>"> </a>
+                    <div class="new-label new-top-right">nuevo</div>
+                  </div>
+                </div>
+                <div class="item-info">
+                  <div class="info-inner">
+                    <div class="item-title"> <a target="_blank" title="<?php echo $row['codigo']; ?>" href="detalle_producto.php?codigo=<?php echo $row['codigo']; ?>"><?php echo $row['codigo']; ?></a>
+                    </div>
+                    <div class="item-content">
+                      <div class="item-price">
+                        <?php //if(isset($_SESSION['active'])){ 
+                        ?>
+                        <!-- <div class="price-box"> <span class="regular-price"> <span class="price">S/ <strong><?php //echo $row['precio_venta']; 
+                                                                                                                  ?></strong></span>
+                                                                  </span>
+                                                              </div> -->
+                        <?php //} 
+                        ?>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          <?php
+          }
+          ?>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+<div class="slider-items-products">
+  <div class="featured-block">
+    <div class="block-title">
+      <h2>New Products</h2>
+    </div>
+    <div id="featured-slider" class="product-flexslider hidden-buttons">
+      <div class="slider-items slider-width-col4 products-grid block-content owl-carousel owl-theme" style="opacity: 1; display: block;">
+        <div class="owl-wrapper-outer">
+          <div class="owl-wrapper" style="width: 3276px; left: 0px; display: block;">
+            <div class="owl-item" style="width: 234px;">
+              <div class="item">
+                <div class="item-inner">
+                  <div class="item-img">
+                    <div class="item-img-info"> <a class="product-image" title="ThinkPad X1 Ultrabook" href="product_detail.html"> <img alt="ThinkPad X1 Ultrabook" src="images/product-img.jpg"> </a>
+                      <div class="new-label new-top-right">new</div>
+                      <div class="box-hover">
+                        <ul class="add-to-links">
+                          <li><a class="link-quickview" href="quick_view.html"></a> </li>
+                          <li><a class="link-wishlist" href="wishlist.html"></a> </li>
+                          <li><a class="link-compare" href="compare.html"></a> </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item-info">
+                    <div class="info-inner">
+                      <div class="item-title"> <a title="ThinkPad X1 Ultrabook" href="product_detail.html"> ThinkPad X1 Ultrabook </a> </div>
+                      <div class="rating">
+                        <div class="ratings">
+                          <div class="rating-box">
+                            <div style="width:80%" class="rating"></div>
+                          </div>
+                          <p class="rating-links"> <a href="#">1 Review(s)</a> <span class="separator">|</span> <a href="#">Add Review</a> </p>
+                        </div>
+                      </div>
+                      <div class="item-content">
+                        <div class="item-price">
+                          <div class="price-box"> <span class="regular-price"> <span class="price">$125.00</span> </span> </div>
+                        </div>
+                        <div class="action">
+                          <button class="button btn-cart" type="button" title="" data-original-title="Add to Cart"><span>Add to Cart</span> </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="owl-item" style="width: 234px;">
+              <div class="item">
+                <div class="item-inner">
+                  <div class="item-img">
+                    <div class="item-img-info"> <a class="product-image" title="Samsung GALAXY Note" href="product_detail.html"> <img alt="Samsung GALAXY Note" src="images/product-img.jpg"> </a>
+                      <div class="box-hover">
+                        <ul class="add-to-links">
+                          <li><a class="link-quickview" href="quick_view.html"></a> </li>
+                          <li><a class="link-wishlist" href="wishlist.html"></a> </li>
+                          <li><a class="link-compare" href="compare.html"></a> </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item-info">
+                    <div class="info-inner">
+                      <div class="item-title"> <a title="Samsung GALAXY Note" href="product_detail.html"> Samsung GALAXY Note </a> </div>
+                      <div class="item-content">
+                        <div class="rating">
+                          <div class="ratings">
+                            <div class="rating-box">
+                              <div style="width:80%" class="rating"></div>
+                            </div>
+                            <p class="rating-links"> <a href="#">1 Review(s)</a> <span class="separator">|</span> <a href="#">Add Review</a> </p>
+                          </div>
+                        </div>
+                        <div class="item-price">
+                          <div class="price-box"> <span class="regular-price"> <span class="price">$235.00</span> </span> </div>
+                        </div>
+                        <div class="action">
+                          <button class="button btn-cart" type="button" title="" data-original-title="Add to Cart"><span>Add to Cart</span> </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="owl-item" style="width: 234px;">
+              <div class="item">
+                <div class="item-inner">
+                  <div class="item-img">
+                    <div class="item-img-info"> <a class="product-image" title="Epson L360 Printer" href="product_detail.html"> <img alt="Epson L360 Printer" src="images/product-img.jpg"> </a>
+                      <div class="box-hover">
+                        <ul class="add-to-links">
+                          <li><a class="link-quickview" href="quick_view.html"></a> </li>
+                          <li><a class="link-wishlist" href="wishlist.html"></a> </li>
+                          <li><a class="link-compare" href="compare.html"></a> </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item-info">
+                    <div class="info-inner">
+                      <div class="item-title"> <a title="Epson L360 Printer" href="product_detail.html"> Epson L360 Printer </a> </div>
+                      <div class="item-content">
+                        <div class="rating">
+                          <div class="ratings">
+                            <div class="rating-box">
+                              <div style="width:80%" class="rating"></div>
+                            </div>
+                            <p class="rating-links"> <a href="#">1 Review(s)</a> <span class="separator">|</span> <a href="#">Add Review</a> </p>
+                          </div>
+                        </div>
+                        <div class="item-price">
+                          <div class="price-box"> <span class="regular-price"> <span class="price">$325.00</span> </span> </div>
+                        </div>
+                        <div class="action">
+                          <button class="button btn-cart" type="button" title="" data-original-title="Add to Cart"><span>Add to Cart</span> </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="owl-item" style="width: 234px;">
+              <div class="item">
+                <div class="item-inner">
+                  <div class="item-img">
+                    <div class="item-img-info"> <a class="product-image" title="QX30 Lens Camera" href="product_detail.html"> <img alt="QX30 Lens Camera" src="images/product-img.jpg"> </a>
+                      <div class="new-label new-top-right">new</div>
+                      <div class="box-hover">
+                        <ul class="add-to-links">
+                          <li><a class="link-quickview" href="quick_view.html"></a> </li>
+                          <li><a class="link-wishlist" href="wishlist.html"></a> </li>
+                          <li><a class="link-compare" href="compare.html"></a> </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item-info">
+                    <div class="info-inner">
+                      <div class="item-title"> <a title="QX30 Lens Camera" href="product_detail.html"> QX30 Lens Camera </a> </div>
+                      <div class="item-content">
+                        <div class="rating">
+                          <div class="ratings">
+                            <div class="rating-box">
+                              <div style="width:80%" class="rating"></div>
+                            </div>
+                            <p class="rating-links"> <a href="#">1 Review(s)</a> <span class="separator">|</span> <a href="#">Add Review</a> </p>
+                          </div>
+                        </div>
+                        <div class="item-price">
+                          <div class="price-box"> <span class="regular-price"> <span class="price">$425.00</span> </span> </div>
+                        </div>
+                        <div class="action">
+                          <button class="button btn-cart" type="button" title="" data-original-title="Add to Cart"><span>Add to Cart</span> </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="owl-item" style="width: 234px;">
+              <div class="item">
+                <div class="item-inner">
+                  <div class="item-img">
+                    <div class="item-img-info"> <a class="product-image" title="Smart Watch A9" href="product_detail.html"> <img alt="Smart Watch A9" src="images/product-img.jpg"> </a>
+                      <div class="box-hover">
+                        <ul class="add-to-links">
+                          <li><a class="link-quickview" href="quick_view.html"></a> </li>
+                          <li><a class="link-wishlist" href="wishlist.html"></a> </li>
+                          <li><a class="link-compare" href="compare.html"></a> </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item-info">
+                    <div class="info-inner">
+                      <div class="item-title"> <a title="Smart Watch A9" href="product_detail.html"> Smart Watch A9 </a> </div>
+                      <div class="item-content">
+                        <div class="rating">
+                          <div class="ratings">
+                            <div class="rating-box">
+                              <div style="width:80%" class="rating"></div>
+                            </div>
+                            <p class="rating-links"> <a href="#">1 Review(s)</a> <span class="separator">|</span> <a href="#">Add Review</a> </p>
+                          </div>
+                        </div>
+                        <div class="item-price">
+                          <div class="price-box"> <span class="regular-price"> <span class="price">$525.00</span> </span> </div>
+                        </div>
+                        <div class="action">
+                          <button class="button btn-cart" type="button" title="" data-original-title="Add to Cart"><span>Add to Cart</span> </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="owl-item" style="width: 234px;">
+              <div class="item">
+                <div class="item-inner">
+                  <div class="item-img">
+                    <div class="item-img-info"> <a class="product-image" title="Retis lapen casen" href="product_detail.html"> <img alt="Touch Notebook 500GB HD" src="images/product-img.jpg"> </a>
+                      <div class="box-hover">
+                        <ul class="add-to-links">
+                          <li><a class="link-quickview" href="quick_view.html"></a> </li>
+                          <li><a class="link-wishlist" href="wishlist.html"></a> </li>
+                          <li><a class="link-compare" href="compare.html"></a> </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item-info">
+                    <div class="info-inner">
+                      <div class="item-title"> <a title="Retis lapen casen" href="product_detail.html"> Touch Notebook 500GB HD </a> </div>
+                      <div class="item-content">
+                        <div class="rating">
+                          <div class="ratings">
+                            <div class="rating-box">
+                              <div style="width:80%" class="rating"></div>
+                            </div>
+                            <p class="rating-links"> <a href="#">1 Review(s)</a> <span class="separator">|</span> <a href="#">Add Review</a> </p>
+                          </div>
+                        </div>
+                        <div class="item-price">
+                          <div class="price-box"> <span class="regular-price"> <span class="price">$225.00</span> </span> </div>
+                        </div>
+                        <div class="action">
+                          <button class="button btn-cart" type="button" title="" data-original-title="Add to Cart"><span>Add to Cart</span> </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="owl-item" style="width: 234px;">
+              <div class="item">
+                <div class="item-inner">
+                  <div class="item-img">
+                    <div class="item-img-info"> <a class="product-image" title="Canon Zoom Camera" href="product_detail.html"> <img alt="Canon Zoom Camera" src="images/product-img.jpg"> </a>
+                      <div class="box-hover">
+                        <ul class="add-to-links">
+                          <li><a class="link-quickview" href="quick_view.html"></a> </li>
+                          <li><a class="link-wishlist" href="wishlist.html"></a> </li>
+                          <li><a class="link-compare" href="compare.html"></a> </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item-info">
+                    <div class="info-inner">
+                      <div class="item-title"> <a title="Canon Zoom Camera" href="product_detail.html"> Canon Zoom Camera </a> </div>
+                      <div class="item-content">
+                        <div class="rating">
+                          <div class="ratings">
+                            <div class="rating-box">
+                              <div style="width:80%" class="rating"></div>
+                            </div>
+                            <p class="rating-links"> <a href="#">1 Review(s)</a> <span class="separator">|</span> <a href="#">Add Review</a> </p>
+                          </div>
+                        </div>
+                        <div class="item-price">
+                          <div class="price-box"> <span class="regular-price"> <span class="price">$185.00</span> </span> </div>
+                        </div>
+                        <div class="action">
+                          <button class="button btn-cart" type="button" title="" data-original-title="Add to Cart"><span>Add to Cart</span> </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="owl-controls clickable">
+          <div class="owl-buttons">
+            <div class="owl-prev"><a class="flex-prev"></a></div>
+            <div class="owl-next"><a class="flex-next"></a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

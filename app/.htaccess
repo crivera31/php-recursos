@@ -1,0 +1,43 @@
+RewriteEngine On
+
+#Options -Indexes
+
+#RewriteCond %{SERVER_PORT} 80
+#RewriteRule ^(.*)$ https://www.segebuco.com/$1 [R,L]
+
+DirectoryIndex home.php
+
+#RewriteCond %{REQUEST_FILENAME} !-d
+#RewriteCond %{REQUEST_FILENAME}.php -f
+#RewriteRule ^(.*)$ $1.php
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+RewriteRule ^home$ home.php [L]
+RewriteRule ^productos$ productos.php [L]
+RewriteRule ^promociones$ promociones.php [L]
+RewriteRule ^about_us$ about_us.php [L]
+RewriteRule ^contact_us$ contact_us.php [L]
+RewriteRule ^cambios_devoluciones$ cambios_devoluciones.php [L]
+RewriteRule ^terminos_condiciones$ terminos_condiciones.php [L]
+
+RewriteRule ^mi_cuenta$ mi_cuenta.php [L]
+RewriteRule ^sing-up$ sing-up.php [L]
+RewriteRule ^login$ login.php [L]
+RewriteRule ^logout$ logout.php [L]
+
+RewriteRule ^carrito$ carrito.php [L]
+RewriteRule ^proceso_compra$ proceso_compra.php [L]
+RewriteRule ^detalle_pedido$ detalle_pedido.php [L]
+RewriteRule ^confirmacion$ confirmacion.php [L]
+
+RewriteRule ^detalle_producto/([a-zA-Z0-9-]*)$ detalle_producto.php?codigo=$1 [L]
+RewriteRule ^detalle_pedido/([a-zA-Z0-9-]*)$ detalle_pedido.php?id=$1 [L]
+
+RewriteRule ^productos/([a-zA-Z]+)/([a-zA-Z0-9-]*)$ productos.php?nivel=$1&id=$2 [L]
+
+RewriteRule ^app.test/admin/$ app.test/admin/index.php [L]
+
+
+#en proceso de compra hago implemento el pago
